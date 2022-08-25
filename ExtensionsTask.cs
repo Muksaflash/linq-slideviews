@@ -13,15 +13,14 @@ namespace linq_slideviews
 		/// </summary>
 		/// <exception cref="InvalidOperationException">Если последовательность не содержит элементов</exception>
 		public static double Median(this IEnumerable<double> items)
-		{
-			if (items.Count() % 2 == 0)
+		{	
+			items = items.OrderBy(x => x);
+			if (items.Count() == 0) throw new InvalidOperationException();
+            if (items.Count() % 2 == 0)
 			{
-				return (items.Take(items.Count() / 2 -1).LastOrDefault() + items.Take(items.Count() / 2).LastOrDefault()) / 2;
+				return (items.Take(items.Count() / 2 ).LastOrDefault() + items.Take(items.Count() / 2+1).LastOrDefault()) / 2;
 			}
-			else return items.Take(items.Count()/2).LastOrDefault();
-
-
-			throw new NotImplementedException();
+			else return items.Take(items.Count()/2+1).LastOrDefault();
 		}
 
 		/// <returns>
