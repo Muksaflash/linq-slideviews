@@ -29,7 +29,16 @@ namespace linq_slideviews
 		/// </returns>
 		public static IEnumerable<Tuple<T, T>> Bigrams<T>(this IEnumerable<T> items)
 		{
-			throw new NotImplementedException();
+			var sequence = items.ToArray();
+			var count = sequence.Count() - 1;
+            var result = new Tuple<T, T>[count];
+			
+            for (int i =0; i< count; i++)
+			{
+                var temp = sequence.Skip(i).Take(2).ToArray();
+				result[i] = Tuple.Create(temp[0], temp[1]);
+			}
+			return result;
 		}
 	}
 }
