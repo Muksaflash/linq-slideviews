@@ -28,7 +28,7 @@ namespace linq_slideviews
 		[Test]
 		public void SkipIncorrectSlides()
 		{
-			var dict = ParsingTask.ParseSlideRecords(new[] { slidesHeaderLine, "asd;asd;asd" });
+			var dict = ParsingTask.ParseSlideRecords(new[] { slidesHeaderLine, "0;theory;" });
 			Assert.That(dict, Is.Empty);
 		}
 
