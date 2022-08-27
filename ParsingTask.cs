@@ -13,29 +13,28 @@ namespace linq_slideviews
         {
             var result = new Dictionary<int, SlideRecord>();
             if (lines.Count() < 2) return result;
-            try
+            result = lines.Skip(1).Where(line =>
+            line.Split(';')
+            .Any(x => x != null && x != "") &&
+            line.Split(';').Count() == 3 &&
+            int.TryParse(line.Split(';').FirstOrDefault(), out int num) &&
+            Enum.TryParse(line.Split(';').Skip(1).FirstOrDefault(), true, out SlideType str)
+            )
+            .ToDictionary(line =>
             {
-                result = lines.Skip(1).ToDictionary(line =>
-                {
-                    var splitString = line.Split(';');
-                    if(splitString.Any(x=>x==null || x=="")) throw new FormatException();
-                    int id = int.Parse(splitString.FirstOrDefault());
-                    return id;
-                },
-                line =>
-                {
-                    var splitString = line.Split(';');
-                    var id = int.Parse(splitString.FirstOrDefault());
-                    var slideType = (SlideType)Enum.Parse(typeof(SlideType), splitString.ToArray()[1], true);
-                    var title = splitString.ToArray()[2];
-                    return new SlideRecord(id, slideType, title);
-                }
-                );
-            }
-            catch
+                var splitString = line.Split(';');
+                int id = int.Parse(splitString.FirstOrDefault());
+                return id;
+            },
+            line =>
             {
-                return new Dictionary<int, SlideRecord>();
+                var splitString = line.Split(';');
+                var id = int.Parse(splitString.FirstOrDefault());
+                var slideType = (SlideType)Enum.Parse(typeof(SlideType), splitString.ToArray()[1], true);
+                var title = splitString.ToArray()[2];
+                return new SlideRecord(id, slideType, title);
             }
+            );
             return result;
         }
 
