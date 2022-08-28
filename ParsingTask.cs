@@ -13,19 +13,11 @@ namespace linq_slideviews
         {
             var result = new Dictionary<int, SlideRecord>();
             if (lines.Count() < 2) return result;
-            result = lines.Skip(1).Where(line =>
-            line.Split(';')
-            .Any(x => x != null && x != "") &&
-            line.Split(';').Count() == 3 &&
-            int.TryParse(line.Split(';').FirstOrDefault(), out int num) &&
-            Enum.TryParse(line.Split(';').Skip(1).FirstOrDefault(), true, out SlideType str)
-            )
-            .ToDictionary(line =>
-            {
-                var splitString = line.Split(';');
-                int id = int.Parse(splitString.FirstOrDefault());
-                return id;
-            },
+            result = lines.Skip(1).Where(line => line.Split(';').All(x => x != null && x != "" && x != " ") &&
+                line.Split(';').Count() == 3 &&
+                int.TryParse(line.Split(';').FirstOrDefault(), out int num) &&
+                Enum.TryParse(line.Split(';').Skip(1).FirstOrDefault(), true, out SlideType str))
+            .ToDictionary(line => int.Parse(line.Split(';').FirstOrDefault()),
             line =>
             {
                 var splitString = line.Split(';');
@@ -48,22 +40,22 @@ namespace linq_slideviews
         {
             return lines.Skip(1).Select(line =>
             {
-                if (line.Split(';').Count() != 4) throw new FormatException(@"Wrong line [" + line + "]");
                 string dateTime = null;
                 DateTime datetime;
-                dateTime = line.Split(';').Skip(2).First() + " " + line.Split(';').Skip(3).First();
-
                 try
                 {
+                    if (line.Split(';').Count() != 4) throw new FormatException(@"Wrong line [" + line + "]");
+                    dateTime = line.Split(';').Skip(2).First() + " " + line.Split(';').Skip(3).First();
                     datetime = DateTime.Parse(dateTime.Trim());
+                    return new VisitRecord(int.Parse(line.Split(';').First()),
+                        int.Parse(line.Split(';').Skip(1).First()),
+                        datetime,
+                        slides[int.Parse(line.Split(';').Skip(1).First())].SlideType);
                 }
                 catch
                 {
                     throw new FormatException(@"Wrong line [" + line + "]");
                 };
-                return new VisitRecord(int.Parse(line.Split(';').First()), int.Parse(line.Split(';').Skip(1).First()),
-                    datetime,
-                    slides[int.Parse(line.Split(';').Skip(1).First())].SlideType);
             });
         }
     }
