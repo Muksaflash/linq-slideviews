@@ -22,7 +22,7 @@ namespace linq_slideviews
 			};
 			var median = StatisticsTask.GetMedianTimePerSlide(visits, SlideType.Exercise);
 			Assert.AreEqual(2, median, 1e-5);
-		}
+		} 
 
 		[Test]
 		public void NoVisits()
@@ -74,3 +74,4 @@ namespace linq_slideviews
 		}
 	}
 }
+
